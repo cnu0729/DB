@@ -124,8 +124,23 @@ SELECT AVG(SALARY) AS "평균급여"
 FROM EMPLOYEE
 WHERE DEPT_CODE = 'D5';
 
+/*** REPLACE 활용 실습 ***/
 
+--1. 이메일 주소에서 모든 점 (.) 하이픈 (-) 대체
+SELECT EMP_ID, EMAIL, REPLACE(EMAIL, '.', '-') AS "수정된 이메일"
+FROM EMPLOYEE;
 
+--2. 주민번호에서 모든 하이픈을 빈문자열로 대체
+SELECT EMP_NAME, EMP_NO, REPLACE(EMP_NO, '-', '') AS "수정된 주민번호"
+FROM EMPLOYEE;
+
+-- 3. 이름에서 김을 KIM
+SELECT EMP_NAME, REPLACE(EMP_NAME, '김', 'KIM') AS "수정된 이름"
+FROM EMPLOYEE;
+
+-- 4.직무코드 J 를 JOB
+SELECT EMP_ID, JOB_CODE, REPLACE(JOB_CODE, 'J', 'JOB') AS "수정된 직무코드"
+FROM EMPLOYEE;
 
 
 
