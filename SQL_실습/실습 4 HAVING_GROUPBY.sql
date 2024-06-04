@@ -31,12 +31,16 @@ SELECT DEPT_CODE, AVG(SALARY)
 FROM EMPLOYEE
 GROUP BY DEPT_CODE
 HAVING AVG(SALARY) > 3000000;
+-- where 조건에 해당하는 사람들을 검색한 다음 조건에 부합하는 것 처럼 보임
+-- group having 모든 사람들ㅇ르 조회하고 조건에 맞는 부서만 선별
+
 
 --2. EMPLOYEE 테이블에서 JOB_CODE별 직원 수를 구하고, 직원 수가 3명 이상인 직급만 조회
 SELECT JOB_CODE, COUNT(*) AS "직원 수"
 FROM EMPLOYEE
 GROUP BY JOB_CODE
 HAVING COUNT(*) >= 3; 
+-- from 찾을 테이블 위치 선정 -> group by 묶을 그룹 선정 -> select 그룹 조건에 맞는 내용 조회
 
 --3. EMPLOYEE 테이블에서 DEPT_CODE별 급여 합계를 구하고, 급여 합계가 10,000,000 이상인 부서만 조회
 SELECT DEPT_CODE, SUM(SALARY) AS "급여합계"
