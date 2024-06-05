@@ -74,31 +74,120 @@ SELECT * FROM USER_MEMBER;
 
 COMMENT ON COLUMN "USER_MEMBER".USER_ID IS '회원아이디';
 
+-- 제약 조건 
+-- unique primary key foreign key check
 
+/*
+제약조건 (CONSTRAINTS)
+사용자가 원하는 조건의 데이터만 유지하기 위해 특정컬럼에 설정하는 제약
 
+데이터 무결성 보장을 목적으로 함
++ 입력 데이터에 문제가 없는지 자동으로 검사하는 목적
+데이터 수정 / 삭제 가능 여부 검사 등을 목적으로 함
+--> 제약 조건을 위배하는 DML 구문은 수행할 수 없음
 
+제약 조건 종류
+PRIMARY KEY, NOT NULL, UNIQUE, CHECK, FOREIGN KEY
 
+-- 제약 조건 확인
+-- USER_CONSTRAINTS : 사용자가 작성한 제약 조건을 확인하는 딕셔너리 뷰
 
+OWNER              : 유저 아이디
+CONSTRAINT_NAME    : 제약 조건 이름
+CONSTRAINT_TYPE    : 제약 조건 유형
+                     C : CHECK
+                     P : PRIMARY KEY
+                     U : UNIQUE
+                     R : FOREIGN KEY
+                     V : VIEW
+                     O : 읽기 전용 뷰
+TABLE_NAME         : 제약 조건이 적용된 테이블 이름
+*/
 
+DESC USER_CONSTRAINTS;
+-- 단축키 모두 지우기 CTRL SHIFR D
 
+SELECT * FROM USER_CONSTRAINTS;
 
+-- 1. NOT NULL
+-- 해당 컬럼에 반드시 값이 존재해야하는 경우 사용
+-- 삽입 / 수정시 NULL 값을 허용하지 않도록 컬럼 레벨에서 제한
 
+-- NOT NULL을 지정한 테이블 생성
+CREATE TABLE USER_TEST_TABLE (
+    USER_NO NUMBER(10,0) NOT NULL, -- 컬럼 레벨 제약 조건 설정
+    USER_ID VARCHAR2(30),
+    USER_PWD VARCHAR2(30),
+    USER_NAME VARCHAR2(20),
+    GENDER VARCHAR2(10),
+    PHONE VARCHAR2(30),
+    EMAIL VARCHAR2(50)
+    );
 
+-- INSERT 모두 작성
+INSERT INTO USER_TEST_TABLE
+VALUES(1, '사용자1', 'PW1', '홍길동', '남', '010-1111-2222', 'hong@hong.co.kr');
 
+-- INSERT 모두 작성
+INSERT INTO USER_TEST_TABLE
+VALUES(null, '사용자1', 'PW1', '홍길동', '남', '010-1111-2222', 'hong@hong.co.kr');
+/*
+SQL 오류: ORA-01400: cannot insert NULL into
+NULL값을 넣을 수 없음
 
+USER_NO NUMBER (10,0) NOT NULL
+NULL 값을 넣을 수 없다 설정 했기 때문에 빈 값 NULL을 넣을 수 없는 것
+*/
 
+-- 2. UNIQUE 제약 조건
+-- 컬럼에 입력 값에 대해서 중복을 제한하는 제약 조건
+-- 컬럼 레벨에서 설정 가능, 테이블 레벨에서 설정 가능
+-- 단, UNIQUE 제약 조건이 설정된 컬럼에 NULL 값은 중복 삽입 가능
 
+-- UNIQUE 제약 조건이 들어간 조건 테이블 생성
+CREATE TABLE UNIQUE_TABLE(
+    USER_NO NUMBER(10,0),
+    
+    --USER_ID VARCHAR2(20) UNIQUE -- 컬럼 레벨 제약 조건 (이름X)
+    -- (방법1)
+    USER_ID VARCHAR2(20) CONSTRAINT USER_ID_U UNIQUE, -- CONSTRAINT 제약조건명 제약조건종료
+                                                      -- 컬럼 레벨 제약 조건 (이름O)
+                                                      
+    -- (방법2)
+    USER_NAME VARCHAR2(30), -- 테이블 레벨로 UNIQUE 제약 조건 설정
+    
+    -- 테이블 레벨 --
+    -- UNIQUE(USER_NAME) -- 컬럼 레벨 제약 조건 (이름X)
+    CONSTRAINT USER_NAME_U UNIQUE(USER_NAME)
+);
 
+-- KH_CAFE 테이블 만들기
+-- CAFE_ID NUMBER 10 기본키 (PRIMARY KEY)
+-- CAFE_NAME VARCHAR2 (100) 널 값 못들어가게 설정
+-- CAFE_PHONE VARCHAR2 (20) 핸드폰 번호 카페 중복 X (방법1)
+-- CAFE_ADDRESS VARCHAR2 (100) 주소 카페 중복 X (방법2)
+CREATE TABLE KH_CAFE(
+    CAFE_ID NUMBER(10,0) PRIMARY KEY,
+    CAFE_NAME VARCHAR2(100) NOT NULL,
+    CAFE_PHONE VARCHAR2(20) CONSTRAINT C_P_U UNIQUE,
+    CAFE_ADDRESS VARCHAR2(100),
+    CONSTRAINT C_A_U UNIQUE(CAFE_ADDRESS)
+);
+/*
+ORA-00955: name is already used by an existing object
+존재하기 떄문에 중복X
+*/
 
+INSERT INTO KH_CAFE
+VALUES(1, '맥아커피', '02-1111-1111', '서울시 강남구 광남동 2길');
 
+/*
+ALTER 를 사용하여 컬럼 크기 수정 가능
+ALTER 테이블명 MODIFTY (수정할 컬럼명 수정할 크기);
 
+ALTER TABLE KH_CAFE MODIFT (CAFE_PHONE VARCHAR2(20);
+*/
 
-
-
-
-
-
-
-
+COMMIT;
 
 
